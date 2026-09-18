@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const authSchema = new mongoose.Schema(
   {
@@ -25,4 +26,9 @@ const authSchema = new mongoose.Schema(
   { timeStamps: true },
 );
 
-export   const Auth = mongoose.model("Auth", authSchema);
+authSchema.pre("save", async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+export const Auth = mongoose.model("Auth", authSchema);
