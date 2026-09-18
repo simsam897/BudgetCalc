@@ -31,4 +31,8 @@ authSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
+authSchema.methods.comparedPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
 export const Auth = mongoose.model("Auth", authSchema);

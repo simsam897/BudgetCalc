@@ -10,7 +10,7 @@ export const signup = async (req, res, next) => {
       });
     }
 
-    const isExist = await Auth.find({ email });
+    const isExist = await Auth.findOne({ email });
 
     if (isExist) {
       return res.status(200).json({
@@ -41,15 +41,21 @@ export const signin = async (req, res, next) => {
       });
     }
 
-    const isExist = await Auth.findOne({ email });
+    const user = await Auth.findOne({ email });
 
-    if (!isExist) {
+    if (!user) {
       return res.status(404).json({
         message: "user is not exist",
       });
     }
 
-    const user = await Auth.findOne({ email, password });
+    const isPasswordMatched = await user.comparedPassword(password);
+
+    if (!isPasswordMatched) {
+      return res.status(409).json({
+        message: "invalid password",
+      });
+    }
 
     return res.status(200).json({
       message: "user signin successfull",
