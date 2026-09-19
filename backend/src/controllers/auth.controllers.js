@@ -58,7 +58,7 @@ export const signin = async (req, res, next) => {
       });
     }
 
-    const token = await genToken(user._id, user.username, user.email);
+    const token = await genToken(user._id, user.email, user.username);
 
     return res
       .status(201)
@@ -70,11 +70,38 @@ export const signin = async (req, res, next) => {
       })
       .json({
         message: "user signin successfull",
-        user,
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+        },
       });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
+  }
+};
+
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const user = await Auth.findOne({ _id: req.user }).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "fectchin current user failed",
+      });
+    }
+
+    return res.status(200).json({
+      message: "current user fetched successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    message: error.message;
   }
 };
