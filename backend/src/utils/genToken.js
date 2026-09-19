@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 
-export const genToken = (email, username, id) => {
+export const genToken = (id, email, username) => {
   return jwt.sign(
     {
+      id,
       email,
       username,
-      id,
     },
     process.env.SECRET_KEY,
     {
