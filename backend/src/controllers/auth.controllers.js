@@ -1,4 +1,5 @@
 import { Auth } from "../models/auth.model.js";
+import { genToken } from "../utils/genToken.js";
 
 export const signup = async (req, res, next) => {
   const { email, username, password } = req.body;
@@ -57,10 +58,20 @@ export const signin = async (req, res, next) => {
       });
     }
 
-    return res.status(200).json({
-      message: "user signin successfull",
-      user,
-    });
+    const token = await genToken(user._id, user.username, user.email);
+
+    return res
+      .status(201)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .json({
+        message: "user signin successfull",
+        user,
+      });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
