@@ -15,7 +15,7 @@ export const verifyToken = async (req, res, next) => {
 
     const user = await Auth.findById(decoded.id).select("-password");
 
-    req.user = user._id;
+    req.user = user;
 
     next();
   } catch (error) {
