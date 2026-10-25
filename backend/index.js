@@ -10,13 +10,10 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-const allowOrigin = process.env.FRONTEND_URL;
-
 app.use(
   cors({
-    origin: allowOrigin,
-
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   }),
 );
